@@ -4,9 +4,15 @@ const axios = require("axios");
 const app = express();
 app.use(express.json());
 
+const port = process.env.PORT || 3000;
+
 // Use environment variable for your API key
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 
+
+app.get('/', (req, res) => {
+  res.send('Hello from Express API on Vercel!');
+});
 app.post("/chat", async (req, res) => {
   try {
     const { messages, model } = req.body;
@@ -27,4 +33,7 @@ app.post("/chat", async (req, res) => {
   }
 });
 
+app.listen(port, ()=>{
+  console.log(`Server running on port ${port}`);
+})
 module.exports = app;
