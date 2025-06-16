@@ -4,7 +4,7 @@ const axios = require("axios");
 const app = express();
 
 app.use(cors({
-  origin: process.env.SELF_URL, // Your frontend origin
+  origin: process.env.FRONTEND_URL, // Your frontend origin
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
