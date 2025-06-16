@@ -33,10 +33,11 @@ app.post("/chat", async (req, res) => {
         },
       }
     );
-    res.json(response.data);
     res.header('Access-Control-Allow-Origin', 'https://uncle-ai-chatbot.vercel.app');
     res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.json(response.data);
+
     res.sendStatus(204);
 
   } catch (error) {
