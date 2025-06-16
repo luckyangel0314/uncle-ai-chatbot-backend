@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.post("/chat", async (req, res) => {
   try {
+    
     const { messages, model } = req.body;
     const response = await axios.post(
       "https://api.perplexity.ai/v1/chat/completions",
@@ -33,6 +34,11 @@ app.post("/chat", async (req, res) => {
       }
     );
     res.json(response.data);
+    res.header('Access-Control-Allow-Origin', 'https://uncle-ai-chatbot.vercel.app');
+    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.sendStatus(204);
+
   } catch (error) {
     console.error(error.response?.data || error.message);
     res.status(500).json({ error: "Error communicating with Perplexity API" });
