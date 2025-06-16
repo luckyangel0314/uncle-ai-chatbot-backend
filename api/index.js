@@ -1,18 +1,24 @@
-// api/index.js
 const express = require("express");
+const cors = require("cors"); // Import cors middleware
 const axios = require("axios");
 const app = express();
+
+app.use(cors({
+  origin: process.env.SELF_URL, // Your frontend origin
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
+}));
+
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
-
-// Use environment variable for your API key
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
-
 
 app.get('/', (req, res) => {
   res.send('Hello from Express API on Vercel!');
 });
+
 app.post("/chat", async (req, res) => {
   try {
     const { messages, model } = req.body;
@@ -33,7 +39,8 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(port, ()=>{
+app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-})
+});
+
 module.exports = app;
