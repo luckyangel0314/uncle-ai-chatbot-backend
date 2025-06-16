@@ -3,8 +3,9 @@ const cors = require("cors"); // Import cors middleware
 const axios = require("axios");
 const app = express();
 
+// Update CORS configuration to allow requests from the frontend
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // Your frontend origin
+  origin: '*', // For development. In production, specify your frontend URL
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
@@ -21,11 +22,18 @@ app.get('/', (req, res) => {
 
 app.post("/chat", async (req, res) => {
   try {
+    const { messages, model = "llama-3.1-sonar-small-128k-online" } = req.body;
     
-    const { messages, model } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: "Invalid messages format" });
+    }
+
     const response = await axios.post(
       "https://api.perplexity.ai/v1/chat/completions",
-      { model: model || "llama-3.1-sonar-small-128k-online", messages },
+      {
+        model: model,
+        messages: messages
+      },
       {
         headers: {
           Authorization: `Bearer ${PERPLEXITY_API_KEY}`,
@@ -33,16 +41,14 @@ app.post("/chat", async (req, res) => {
         },
       }
     );
-    res.header('Access-Control-Allow-Origin', 'https://uncle-ai-chatbot.vercel.app');
-    res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
     res.json(response.data);
-
-    res.sendStatus(204);
-
   } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ error: "Error communicating with Perplexity API" });
+    console.error("Error:", error.response?.data || error.message);
+    res.status(500).json({ 
+      error: "Error communicating with Perplexity API",
+      details: error.response?.data || error.message 
+    });
   }
 });
 
