@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors"); // Import cors middleware
 const axios = require("axios");
 const app = express();
+require('dotenv').config();
 
 // Update CORS configuration to allow requests from the frontend
 app.use(cors({
@@ -16,6 +17,8 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 
+console.log(PERPLEXITY_API_KEY)
+
 app.get('/', (req, res) => {
   res.send('Hello from Express API on Vercel!');
 });
@@ -27,9 +30,9 @@ app.post("/chat", async (req, res) => {
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "Invalid messages format" });
     }
-
+    console.log("Server is going to get response from perplexity")
     const response = await axios.post(
-      "https://api.perplexity.ai/v1/chat/completions",
+      "https://api.perplexity.ai/chat/completions",
       {
         model: model,
         messages: messages
